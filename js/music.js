@@ -88,21 +88,25 @@
     return allRows.find(row => row.chart_date === date && row.rank === 1) || allRows.find(row => row.chart_date === date);
   }
 
-  function updateSelectedRow() {
-    const selector = document.getElementById("weekSelector");
-    selectedRow = selectedChartRow(selector.value);
-    if (!selectedRow) return;
-
-    setText("nowPlayingSong", selectedRow.song);
-    setText("nowPlayingArtist", `${selectedRow.artist} · No. ${selectedRow.rank}`);
-    setText("nowPlayingDate", formatDate(selectedRow.chart_date));
-    const accent = colorHex(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
+  function renderSelectedRow(row, status) {
+    if (!row) return;
+    selectedRow = row;
+    setText("nowPlayingSong", row.song);
+    setText("nowPlayingArtist", `${row.artist} · No. ${row.rank}`);
+    setText("nowPlayingDate", formatDate(row.chart_date));
+    const accent = colorHex(colorFor(`${row.song}|${row.artist}`));
     const cover = document.getElementById("nowPlayingCover");
     if (cover) cover.style.setProperty("--cover-accent", accent);
-    setText("coverSong", selectedRow.song);
-    setText("coverArtist", selectedRow.artist);
-    setText("playerStatus", spinning ? `Spinning through No. 1 records… currently showing ${selectedRow.song}.` : `Selected ${selectedRow.song} by ${selectedRow.artist}. Click the player to spin.`);
-    if (sceneBundle) sceneBundle.setLabelColor(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
+    setText("coverSong", row.song);
+    setText("coverArtist", row.artist);
+    setText("playerStatus", status || (spinning ? `Spinning through songs… currently showing ${row.song}.` : `Selected ${row.song} by ${row.artist}. Click the player to spin.`));
+    if (sceneBundle) sceneBundle.setLabelColor(colorFor(`${row.song}|${row.artist}`));
+  }
+
+  function updateSelectedRow() {
+    const selector = document.getElementById("weekSelector");
+    const row = selector ? selectedChartRow(selector.value) : null;
+    if (row) renderSelectedRow(row);
   }
 
   function populateWeekSelector(rows) {
@@ -127,6 +131,7 @@
 
   function spinRecord() {
     if (!numberOneRows.length) return;
+    if (sceneBundle && !sceneBundle.isZoomed()) sceneBundle.setZoomed(true);
     if (spinning) {
       stopSpin();
       return;
@@ -144,7 +149,7 @@
       selectedRow = randomNumberOne();
       const selector = document.getElementById("weekSelector");
       if (selector) selector.value = selectedRow.chart_date;
-      updateSelectedRow();
+      renderSelectedRow(selectedRow);
     }, 420);
   }
 
@@ -161,6 +166,14 @@
     if (selectedRow) setText("playerStatus", `Stopped on ${selectedRow.song} by ${selectedRow.artist}.`);
   }
 
+  function selectRecordRow(row) {
+    if (!row) return;
+    if (spinning) stopSpin();
+    const selector = document.getElementById("weekSelector");
+    if (selector) selector.value = row.chart_date;
+    renderSelectedRow(row, `Selected ${row.song} by ${row.artist}. Hover another neon dot or spin again.`);
+  }
+
   function cylinderBetween(THREE, start, end, radius, material) {
     const direction = new THREE.Vector3().subVectors(end, start);
     const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, direction.length(), 16), material);
@@ -169,7 +182,7 @@
     return mesh;
   }
 
-  function createRecordPlayer() {
+  function createRecordPlayer(rows) {
     const mount = document.getElementById("recordPlayer");
     if (!mount || !window.THREE) return null;
 
@@ -189,6 +202,17 @@
       if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
       mount.innerHTML = "";
       mount.appendChild(renderer.domElement);
+      const interactionHint = document.createElement("div");
+      interactionHint.className = "record-interaction-hint";
+      interactionHint.textContent = "Click the record to zoom in";
+      mount.appendChild(interactionHint);
+      const tooltip = document.createElement("div");
+      tooltip.className = "record-tooltip";
+      tooltip.hidden = true;
+      const tooltipSong = document.createElement("strong");
+      const tooltipMeta = document.createElement("span");
+      tooltip.append(tooltipSong, tooltipMeta);
+      mount.appendChild(tooltip);
 
       scene.add(new THREE.HemisphereLight(0x9ab8ff, 0x170e28, 2.6));
       const keyLight = new THREE.DirectionalLight(0xfff0bb, 4.5);
@@ -257,6 +281,39 @@
       platterRim.rotation.x = Math.PI / 2;
       platterRim.position.y = .23;
       recordGroup.add(platterRim);
+
+      const songRowsByKey = new Map();
+      rows.forEach(row => {
+        const key = `${row.song}|${row.artist}`;
+        const existing = songRowsByKey.get(key);
+        if (!existing || row.rank < existing.rank || (row.rank === existing.rank && row.chart_date > existing.chart_date)) songRowsByKey.set(key, row);
+      });
+      const songRows = [...songRowsByKey.values()];
+      const dotPositions = [];
+      const dotColors = [];
+      songRows.forEach(row => {
+        const key = `${row.song}|${row.artist}`;
+        const seed = hash(key);
+        const angle = (seed % 6283) / 1000;
+        const radius = .84 + (((seed >>> 8) % 1370) / 1000);
+        dotPositions.push(Math.cos(angle) * radius, .41, Math.sin(angle) * radius);
+        const color = new THREE.Color(colorFor(key));
+        dotColors.push(color.r, color.g, color.b);
+      });
+      const dotGeometry = new THREE.BufferGeometry();
+      dotGeometry.setAttribute("position", new THREE.Float32BufferAttribute(dotPositions, 3));
+      dotGeometry.setAttribute("color", new THREE.Float32BufferAttribute(dotColors, 3));
+      const dotMaterial = new THREE.PointsMaterial({ size: .075, vertexColors: true, transparent: true, opacity: .95, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      const songDots = new THREE.Points(dotGeometry, dotMaterial);
+      songDots.visible = false;
+      recordGroup.add(songDots);
+      const haloMaterial = new THREE.PointsMaterial({ size: .2, vertexColors: true, transparent: true, opacity: .16, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      const songDotHalos = new THREE.Points(dotGeometry, haloMaterial);
+      songDotHalos.visible = false;
+      recordGroup.add(songDotHalos);
+      const hoverMarker = new THREE.Mesh(new THREE.SphereGeometry(.12, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .95 }));
+      hoverMarker.visible = false;
+      recordGroup.add(hoverMarker);
 
       const tonearmBase = new THREE.Mesh(new THREE.CylinderGeometry(.32, .38, .22, 32), goldMaterial);
       tonearmBase.position.set(2.35, -.05, -1.6);
@@ -342,6 +399,82 @@
       resize();
       if (window.ResizeObserver) new ResizeObserver(resize).observe(mount);
 
+      const raycaster = new THREE.Raycaster();
+      raycaster.params.Points.threshold = .14;
+      const pointer = new THREE.Vector2();
+      const normalCameraPosition = new THREE.Vector3(7.1, 5.9, 8.2);
+      const zoomCameraPosition = new THREE.Vector3(4.15, 3.45, 4.7);
+      const normalLookAt = new THREE.Vector3(0, 0, 0);
+      const zoomLookAt = new THREE.Vector3(0, .2, 0);
+      let cameraGoal = normalCameraPosition.clone();
+      let lookGoal = normalLookAt.clone();
+      let zoomed = false;
+      const stage = mount.closest(".music-stage");
+      const zoomOutButton = document.getElementById("zoomOutRecord");
+
+      const hitTest = event => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        return raycaster.intersectObject(songDots, false)[0];
+      };
+
+      const hideTooltip = () => {
+        tooltip.hidden = true;
+        hoverMarker.visible = false;
+      };
+
+      const showTooltip = (row, intersection, event) => {
+        if (!row) return hideTooltip();
+        const point = songDots.geometry.attributes.position;
+        hoverMarker.position.set(point.getX(intersection.index), point.getY(intersection.index) + .035, point.getZ(intersection.index));
+        hoverMarker.visible = true;
+        tooltipSong.textContent = row.song;
+        tooltipMeta.textContent = `${row.artist} · Rank ${row.rank} · ${formatDate(row.chart_date)} · ${row.weeks_on_chart} weeks`;
+        const rect = renderer.domElement.getBoundingClientRect();
+        tooltip.style.left = `${Math.min(Math.max(12, event.clientX - rect.left + 16), Math.max(12, rect.width - 230))}px`;
+        tooltip.style.top = `${Math.min(Math.max(12, event.clientY - rect.top - 20), Math.max(12, rect.height - 78))}px`;
+        tooltip.hidden = false;
+      };
+
+      const handlePointerMove = event => {
+        if (!zoomed) return hideTooltip();
+        const intersection = hitTest(event);
+        showTooltip(intersection ? songRows[intersection.index] : null, intersection, event);
+      };
+
+      const handleCanvasClick = event => {
+        if (!zoomed) return;
+        const intersection = hitTest(event);
+        if (!intersection) return;
+        event.stopPropagation();
+        selectRecordRow(songRows[intersection.index]);
+      };
+
+      renderer.domElement.addEventListener("pointermove", handlePointerMove);
+      renderer.domElement.addEventListener("pointerleave", hideTooltip);
+      renderer.domElement.addEventListener("click", handleCanvasClick);
+
+      const setZoomed = value => {
+        zoomed = value;
+        cameraGoal = (value ? zoomCameraPosition : normalCameraPosition).clone();
+        lookGoal = (value ? zoomLookAt : normalLookAt).clone();
+        songDots.visible = value;
+        songDotHalos.visible = value;
+        mount.classList.toggle("is-zoomed", value);
+        if (stage) stage.classList.toggle("is-zoomed", value);
+        if (zoomOutButton) zoomOutButton.hidden = !value;
+        interactionHint.textContent = value ? `Hover one of ${songRows.length.toLocaleString()} song dots · click the record to spin` : "Click the record to zoom in";
+        if (!value) hideTooltip();
+        setText("playerStatus", value ? "Close-up ready: hover a neon dot or click the record to spin." : `Selected ${selectedRow ? selectedRow.song : "a song"}. Click the record to zoom in.`);
+      };
+
+      zoomOutButton?.addEventListener("click", () => {
+        if (spinning) stopSpin();
+        setZoomed(false);
+      });
+
       let isPlaying = false;
       let labelColor = colorFor("Billboard");
       const clock = new THREE.Clock();
@@ -350,6 +483,11 @@
         if (isPlaying) recordGroup.rotation.y += .035;
         else recordGroup.rotation.y += .002;
         recordGroup.position.y = -.12 + Math.sin(elapsed * 1.2) * .012;
+        camera.position.lerp(cameraGoal, .08);
+        const currentLookAt = camera.userData.currentLookAt || normalLookAt.clone();
+        currentLookAt.lerp(lookGoal, .08);
+        camera.userData.currentLookAt = currentLookAt;
+        camera.lookAt(currentLookAt);
         renderer.render(scene, camera);
         window.requestAnimationFrame(animate);
       };
@@ -357,6 +495,8 @@
 
       return {
         setPlaying(value) { isPlaying = value; },
+        setZoomed,
+        isZoomed() { return zoomed; },
         setLabelColor(value) {
           labelColor = value;
           label.material.color.setHex(labelColor);
@@ -377,15 +517,28 @@
     const spinButton = document.getElementById("spinRecord");
     const player = document.getElementById("recordPlayer");
     spinButton?.addEventListener("click", spinRecord);
-    player?.addEventListener("click", spinRecord);
+    const activatePlayer = () => {
+      if (sceneBundle && !sceneBundle.isZoomed()) {
+        sceneBundle.setZoomed(true);
+        return;
+      }
+      spinRecord();
+    };
+    player?.addEventListener("click", activatePlayer);
     player?.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        spinRecord();
+        activatePlayer();
       }
     });
-    sceneBundle = createRecordPlayer();
+    sceneBundle = createRecordPlayer(rows);
     if (sceneBundle && selectedRow) sceneBundle.setLabelColor(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
+    window.addEventListener("keydown", event => {
+      if (event.key === "Escape" && sceneBundle?.isZoomed()) {
+        if (spinning) stopSpin();
+        sceneBundle.setZoomed(false);
+      }
+    });
   }
 
   window.Hot100Music = { start };
