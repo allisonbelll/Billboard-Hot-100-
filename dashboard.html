@@ -4,16 +4,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Billboard Hot 100 | Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="stylesheet" href="styles.css?v=12" />
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/data.js?v=3" defer></script>
-    <script src="js/dashboard.js?v=3" defer></script>
+    <script src="js/dashboard.js?v=4" defer></script>
   </head>
   <body>
     <nav class="site-nav"><a class="brand" href="index.html">HOT 100 / WEEKLY MOMENTUM</a><div class="nav-links"><a href="index.html">Report</a><a class="active" href="dashboard.html">Dashboard</a></div></nav>
     <main class="page-shell">
-      <section class="dashboard-heading"><p class="eyebrow">Interactive dashboard</p><h1>Filter the weekly chart universe.</h1><p class="hero-copy">Use the controls to compare years, artists, movement, and rank ranges. Every summary card, chart, and table below updates from the filtered rows.</p></section>
+      <section class="dashboard-heading dashboard-hero">
+        <span class="dashboard-ghost-number" aria-hidden="true">100</span>
+        <p class="eyebrow">BILLBOARD</p>
+        <h1><span># HOT 100</span><small>THE WEEK'S TOP SONGS</small></h1>
+        <p class="hero-copy">Filter the weekly chart universe, then move through the songs as a living chart archive. Every summary, graphic, and song card below updates from the same 83,500 observations.</p>
+      </section>
 
       <section class="control-panel" aria-label="Dashboard filters">
         <label>Year<select id="yearFilter"><option value="">All years</option></select></label>
@@ -29,7 +34,15 @@
 
       <section class="dashboard-grid"><article class="chart-card chart-wide"><h2>Filtered trend</h2><div class="chart-wrap"><canvas id="trendChart"></canvas></div></article><article class="chart-card"><h2>Top artists</h2><div class="chart-wrap"><canvas id="artistChart"></canvas></div></article><article class="chart-card"><h2>Movement mix</h2><div class="chart-wrap"><canvas id="movementChart"></canvas></div></article><article class="chart-card chart-wide"><h2>Longevity by rank bucket</h2><div class="chart-wrap"><canvas id="longevityChart"></canvas></div></article></section>
 
-      <section class="table-card"><div class="table-heading"><div><p class="eyebrow">Current view</p><h2>Rows behind the charts</h2></div><span id="tableSummary" class="muted">—</span></div><div class="table-scroll"><table><thead><tr><th>Date</th><th>Rank</th><th>Song</th><th>Artist</th><th>Last week</th><th>Peak</th><th>Weeks</th><th>Movement</th></tr></thead><tbody id="dataBody"></tbody></table></div></section>
+      <section class="table-card song-archive-card">
+        <div class="table-heading">
+          <div><p class="eyebrow">Current view / song archive</p><h2>Every song as an interactive card</h2></div>
+          <span id="tableSummary" class="muted">—</span>
+        </div>
+        <p class="archive-intro">The data stays complete behind the dashboard. This focused archive presents the first 100 matching observations as chart cards so rank, movement, longevity, and artist information can be scanned at a glance.</p>
+        <div id="selectedSongDetail" class="song-detail-panel" aria-live="polite"><span class="detail-kicker">SELECT A SONG</span><strong>Click any card to inspect its chart context.</strong></div>
+        <div id="songCardList" class="song-card-list" role="list" aria-label="Interactive song cards"></div>
+      </section>
     </main>
   </body>
 </html>
