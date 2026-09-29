@@ -28,12 +28,14 @@
     return `#${value.toString(16).padStart(6, "0")}`;
   }
 
-  function populateRecordWall(rows) {
+  function populateRecordWall(rows, wallYear) {
     const wall = document.getElementById("hangingRecords");
     if (!wall) return;
+    setText("records-title", `Real chart leaders from ${wallYear}.`);
+    setText("recordsDescription", `Each hanging record is a weekly No. 1 from ${wallYear}. The wall updates from the same rows powering the report.`);
     const seen = new Set();
     const numberOnes = rows
-      .filter(row => row.rank === 1)
+      .filter(row => row.rank === 1 && row.year === wallYear)
       .sort((a, b) => b.chart_date.localeCompare(a.chart_date))
       .filter(row => {
         const key = `${row.song}|${row.artist}`;
@@ -44,6 +46,13 @@
       .slice(0, 8);
 
     wall.innerHTML = "";
+    if (!numberOnes.length) {
+      const empty = document.createElement("p");
+      empty.className = "gallery-loading";
+      empty.textContent = `No unique No. 1 records were found for ${wallYear}.`;
+      wall.appendChild(empty);
+      return;
+    }
     numberOnes.forEach((row, index) => {
       const accent = colorHex(colorFor(`${row.song}|${row.artist}`));
       const record = document.createElement("article");
@@ -82,6 +91,22 @@
       record.append(sleeve, disc, meta);
       wall.appendChild(record);
     });
+  }
+
+  function populateWallYearSelector(rows) {
+    const selector = document.getElementById("wallYearSelector");
+    if (!selector) return;
+    const years = [...new Set(rows.map(row => row.year))].sort((a, b) => b - a);
+    selector.innerHTML = "";
+    years.forEach(year => {
+      const option = document.createElement("option");
+      option.value = year;
+      option.textContent = year;
+      selector.appendChild(option);
+    });
+    selector.value = years[0] || "";
+    selector.addEventListener("change", () => populateRecordWall(rows, Number(selector.value)));
+    if (years[0]) populateRecordWall(rows, years[0]);
   }
 
   function selectedChartRow(date) {
@@ -514,7 +539,7 @@
   function start(rows) {
     allRows = rows;
     numberOneRows = rows.filter(row => row.rank === 1);
-    populateRecordWall(rows);
+    populateWallYearSelector(rows);
     populateWeekSelector(rows);
     const spinButton = document.getElementById("spinRecord");
     const player = document.getElementById("recordPlayer");
