@@ -1,6 +1,6 @@
 (function () {
   const charts = {};
-  const palette = ["#f45b69", "#f7b267", "#70c1b3", "#5b8def", "#b28dff", "#f6e27f"];
+  const palette = ["#d94d36", "#e8b738", "#76b9ac", "#527f9f", "#f18535", "#342a26"];
   const formatNumber = value => Number(value).toLocaleString();
   const percent = value => `${(value * 100).toFixed(1)}%`;
 
@@ -10,7 +10,7 @@
     charts[id] = new Chart(document.getElementById(id), {
       type,
       data: { labels, datasets: [{ label, data: values, backgroundColor: options.backgroundColor || palette, borderColor: options.borderColor || "#f45b69", borderWidth: 2, fill: false, tension: .25 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: options.beginAtZero !== false, grid: { color: "#263248" }, ticks: { color: "#9ca9c2" } }, x: { grid: { display: false }, ticks: { color: "#9ca9c2", maxRotation: 0 } } } },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: options.beginAtZero !== false, grid: { color: "#d3bea0" }, ticks: { color: "#6b6259" } }, x: { grid: { display: false }, ticks: { color: "#6b6259", maxRotation: 0 } } } },
     });
   }
 
@@ -80,6 +80,7 @@
     setText("findingEight", `${formatNumber(numberOneDebuts)} of ${formatNumber(newEntries.length)} new entries debuted at No. 1.`);
     const debutsByYear = d3.rollup(newEntries, values => values.filter(row => row.rank === 1).length, row => row.year);
     makeChart("chartEight", "bar", years, years.map(year => debutsByYear.get(year) || 0), "No. 1 debuts");
+    if (window.Hot100Music) window.Hot100Music.start(rows);
   }
 
   Hot100Data.loadRows().then(renderReport).catch(error => {

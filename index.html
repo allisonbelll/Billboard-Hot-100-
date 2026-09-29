@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="js/data.js" defer></script>
+    <script src="js/music.js" defer></script>
     <script src="js/report.js" defer></script>
   </head>
   <body>
@@ -17,11 +19,43 @@
     </nav>
 
     <main class="page-shell">
-      <section class="hero">
-        <p class="eyebrow">Financial Data Analytics · Billboard Hot 100</p>
-        <h1>What makes a song stay on the chart?</h1>
-        <p class="hero-copy">This report studies weekly Billboard Hot 100 song appearances from 2010 through 2025. It focuses on rank movement, chart longevity, artist concentration, and the changing mix of songs in the Top 100.</p>
-        <p class="byline">Prepared by Allison Bell · Data snapshot: 2010–2025</p>
+      <section class="hero musical-hero">
+        <div class="hero-copy-block">
+          <p class="eyebrow">Financial Data Analytics · Billboard Hot 100</p>
+          <h1>What makes a song stay on the chart?</h1>
+          <p class="hero-copy">A musical tour through weekly Billboard Hot 100 song appearances from 2010 through 2025. Spin through the archive, hear a tiny chart-inspired melody, and explore the patterns behind rank movement, chart longevity, and artist concentration.</p>
+          <p class="byline">Prepared by Allison Bell · Data snapshot: 2010–2025</p>
+
+          <div class="record-controls" aria-label="Weekly record player controls">
+            <label for="weekSelector">Choose a chart week
+              <select id="weekSelector">
+                <option value="">Loading chart weeks…</option>
+              </select>
+            </label>
+            <button id="playRecord" class="button-primary" type="button">▶ Play this week</button>
+            <p id="playerStatus" class="player-status" aria-live="polite">Choose a week to hear its chart-inspired melody.</p>
+          </div>
+        </div>
+
+        <div class="music-stage" aria-label="Interactive 3D record player">
+          <div class="stage-note stage-note-one" aria-hidden="true">♫</div>
+          <div class="stage-note stage-note-two" aria-hidden="true">♪</div>
+          <div class="stage-note stage-note-three" aria-hidden="true">♬</div>
+          <div class="instrument-sticker sticker-piano" aria-hidden="true"><span>♫</span>Keys</div>
+          <div class="instrument-sticker sticker-guitar" aria-hidden="true"><span>♬</span>Guitar</div>
+          <div class="instrument-sticker sticker-tape" aria-hidden="true"><span>▣</span>Tape</div>
+          <div id="recordPlayer" class="record-player" role="img" aria-label="A 3D record player with a spinning record">
+            <div class="record-player-fallback" aria-hidden="true"></div>
+          </div>
+          <div class="now-playing">
+            <div>
+              <span class="now-playing-label">Now on the turntable</span>
+              <strong id="nowPlayingSong">Select a week</strong>
+              <small id="nowPlayingArtist">The chart’s No. 1 song will appear here.</small>
+            </div>
+            <small id="nowPlayingDate">—</small>
+          </div>
+        </div>
       </section>
 
       <section class="stat-grid" aria-label="Headline numbers">

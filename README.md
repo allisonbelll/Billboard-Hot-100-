@@ -4,8 +4,10 @@ This project analyzes weekly Billboard Hot 100 song appearances from 2010 throug
 
 ## Pages
 
-- `index.html` is the report page with headline numbers, eight findings, eight charts, and methodology notes.
+- `index.html` is the report page with headline numbers, eight findings, eight charts, methodology notes, and an interactive 3D record player. Select a chart week to display that week's No. 1 song and play a short browser-generated melody based on the chart row.
 - `dashboard.html` is the filtered dashboard with four filters, four summary cards, four charts, a table, and reset controls.
+
+The musical hero uses Three.js from a CDN for the turntable scene and the Web Audio API for the short melody preview. Audio begins only after the visitor presses the play button.
 
 ## Data source
 
