@@ -223,10 +223,16 @@ h2 {
   overflow: hidden;
   border: 2px solid rgba(255, 214, 92, .42);
   border-radius: 2rem;
+  cursor: pointer;
   background:
     linear-gradient(135deg, rgba(255, 214, 92, .2), transparent 48%),
     linear-gradient(160deg, #3a2538, #11121e);
   box-shadow: 0 30px 50px rgba(0, 0, 0, .55), inset 0 0 0 9px rgba(255, 255, 255, .08), 0 0 35px rgba(255, 157, 69, .18);
+}
+
+.record-player:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 5px;
 }
 
 .record-player canvas {
@@ -309,7 +315,7 @@ h2 {
   left: 1rem;
   z-index: 4;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 5.4rem minmax(0, 1fr) auto;
   gap: .7rem 1rem;
   align-items: center;
   padding: .8rem 1rem;
@@ -339,6 +345,89 @@ h2 {
 
 .now-playing strong { font-size: 1rem; }
 .now-playing small { color: #c9c6d7; }
+
+.cover-art {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  width: 5.4rem;
+  aspect-ratio: 1;
+  overflow: hidden;
+  padding: .45rem;
+  color: #080a18;
+  border: 2px solid var(--cover-accent, var(--gold));
+  border-radius: .55rem;
+  background:
+    radial-gradient(circle at 75% 18%, rgba(255, 255, 255, .78) 0 .08rem, transparent .1rem),
+    radial-gradient(circle at 24% 68%, rgba(255, 255, 255, .5) 0 .12rem, transparent .14rem),
+    linear-gradient(145deg, var(--cover-accent, var(--gold)), var(--purple));
+  box-shadow: 0 0 20px color-mix(in srgb, var(--cover-accent, var(--gold)) 60%, transparent);
+  transform: rotate(-4deg);
+}
+
+.cover-art::before,
+.cover-art::after {
+  position: absolute;
+  content: "";
+  border: 1px solid rgba(8, 10, 24, .4);
+  border-radius: 50%;
+}
+
+.cover-art::before {
+  right: -.7rem;
+  bottom: -.9rem;
+  width: 3.8rem;
+  height: 3.8rem;
+  background: repeating-radial-gradient(circle, rgba(8, 10, 24, .52) 0 1px, transparent 2px 4px);
+}
+
+.cover-art::after {
+  top: -.8rem;
+  left: -.6rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  background: rgba(111, 242, 202, .62);
+  box-shadow: 0 0 18px var(--mint);
+}
+
+.cover-art > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cover-kicker {
+  font-size: .42rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.cover-art strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: .54rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.cover-art small {
+  overflow: hidden;
+  color: #080a18;
+  font-size: .43rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cover-spark {
+  position: absolute !important;
+  right: .28rem;
+  top: .25rem;
+  color: #fff;
+  font-size: 1rem;
+  text-shadow: 0 0 8px #fff;
+}
 
 .record-controls {
   display: flex;
@@ -511,6 +600,7 @@ button:hover {
 
 .record-disc {
   position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
   width: min(100%, 10.5rem);
@@ -520,6 +610,69 @@ button:hover {
   background: repeating-radial-gradient(circle at 48% 48%, #34334d 0 2px, #0c0d18 3px 6px);
   box-shadow: 0 16px 24px rgba(0, 0, 0, .45), 0 0 0 1px rgba(90, 215, 255, .45), 0 0 26px color-mix(in srgb, var(--label-color) 58%, transparent);
   transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.record-sleeve {
+  position: absolute;
+  top: 2.35rem;
+  left: calc(50% - 1.4rem);
+  z-index: 0;
+  display: grid;
+  align-content: space-between;
+  width: min(100%, 8.8rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  padding: .62rem;
+  color: #080a18;
+  border: 2px solid var(--label-color);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, .7) 0 .08rem, transparent .1rem),
+    linear-gradient(145deg, var(--label-color), var(--purple));
+  box-shadow: 0 0 22px color-mix(in srgb, var(--label-color) 50%, transparent);
+  transform: rotate(8deg);
+}
+
+.record-sleeve::after {
+  position: absolute;
+  right: -.65rem;
+  bottom: -.8rem;
+  width: 4.2rem;
+  height: 4.2rem;
+  content: "";
+  border: 1px solid rgba(8, 10, 24, .45);
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, rgba(8, 10, 24, .5) 0 1px, transparent 2px 4px);
+}
+
+.record-sleeve strong,
+.record-sleeve small,
+.record-sleeve span {
+  position: relative;
+  z-index: 1;
+}
+
+.record-sleeve strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: .58rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.record-sleeve small {
+  overflow: hidden;
+  font-size: .46rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-sleeve span {
+  font-size: .42rem;
+  font-weight: 900;
+  letter-spacing: .08em;
 }
 
 .record-disc:hover {
@@ -838,6 +991,10 @@ td:nth-child(4) {
 
   .now-playing {
     grid-template-columns: 1fr;
+  }
+
+  .cover-art {
+    width: 5.8rem;
   }
 
   .record-controls,

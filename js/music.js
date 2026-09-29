@@ -1,12 +1,10 @@
 (function (window) {
   let allRows = [];
+  let numberOneRows = [];
   let selectedRow = null;
-  let audioContext = null;
-  let playing = false;
-  let stopTimer = null;
+  let spinning = false;
+  let spinTimer = null;
   let sceneBundle = null;
-
-  const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
 
   function setText(id, value) {
     const element = document.getElementById(id);
@@ -61,6 +59,16 @@
       discCopy.textContent = "No. 1";
       disc.appendChild(discCopy);
 
+      const sleeve = document.createElement("div");
+      sleeve.className = "record-sleeve";
+      const sleeveLabel = document.createElement("span");
+      sleeveLabel.textContent = "CHART ARCHIVE";
+      const sleeveTitle = document.createElement("strong");
+      sleeveTitle.textContent = row.song;
+      const sleeveArtist = document.createElement("small");
+      sleeveArtist.textContent = row.artist;
+      sleeve.append(sleeveLabel, sleeveTitle, sleeveArtist);
+
       const meta = document.createElement("div");
       meta.className = "record-meta";
       const title = document.createElement("strong");
@@ -71,7 +79,7 @@
       date.className = "record-rank";
       date.textContent = formatDate(row.chart_date);
       meta.append(title, artist, date);
-      record.append(disc, meta);
+      record.append(sleeve, disc, meta);
       wall.appendChild(record);
     });
   }
@@ -88,8 +96,13 @@
     setText("nowPlayingSong", selectedRow.song);
     setText("nowPlayingArtist", `${selectedRow.artist} · No. ${selectedRow.rank}`);
     setText("nowPlayingDate", formatDate(selectedRow.chart_date));
-    setText("playerStatus", `Ready to play a chart-inspired melody for ${selectedRow.song}.`);
-    if (sceneBundle) sceneBundle.setLabelColor(colorFor(selectedRow.song));
+    const accent = colorHex(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
+    const cover = document.getElementById("nowPlayingCover");
+    if (cover) cover.style.setProperty("--cover-accent", accent);
+    setText("coverSong", selectedRow.song);
+    setText("coverArtist", selectedRow.artist);
+    setText("playerStatus", spinning ? `Spinning through No. 1 records… currently showing ${selectedRow.song}.` : `Stopped on ${selectedRow.song} by ${selectedRow.artist}.`);
+    if (sceneBundle) sceneBundle.setLabelColor(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
   }
 
   function populateWeekSelector(rows) {
@@ -108,64 +121,44 @@
     updateSelectedRow();
   }
 
-  function playNote(context, frequency, start, duration, type = "triangle", volume = .11) {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, start);
-    gain.gain.setValueAtTime(.0001, start);
-    gain.gain.exponentialRampToValueAtTime(volume, start + .035);
-    gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start(start);
-    oscillator.stop(start + duration + .08);
+  function randomNumberOne() {
+    return numberOneRows[Math.floor(Math.random() * numberOneRows.length)];
   }
 
-  function melodyFor(row) {
-    const seed = hash(`${row.song}|${row.artist}|${row.chart_date}`);
-    return Array.from({ length: 12 }, (_, index) => {
-      const step = (seed + index * 17 + (index % 3) * 7) % scale.length;
-      return scale[step];
-    });
-  }
-
-  async function playRecord() {
-    if (!selectedRow) return;
-    if (playing) {
-      stopRecord();
+  function spinRecord() {
+    if (!numberOneRows.length) return;
+    if (spinning) {
+      stopSpin();
       return;
     }
 
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) {
-      setText("playerStatus", "Your browser does not support the audio preview.");
-      return;
+    spinning = true;
+    const button = document.getElementById("spinRecord");
+    if (button) {
+      button.textContent = "■ Stop on this song";
+      button.setAttribute("aria-pressed", "true");
     }
-
-    audioContext = audioContext || new AudioContext();
-    if (audioContext.state === "suspended") await audioContext.resume();
-    const start = audioContext.currentTime + .06;
-    const notes = melodyFor(selectedRow);
-    notes.forEach((frequency, index) => {
-      playNote(audioContext, frequency, start + index * .28, .24, index % 4 === 0 ? "sine" : "triangle", .1);
-      if (index % 3 === 0) playNote(audioContext, frequency / 2, start + index * .28, .3, "sine", .045);
-    });
-
-    playing = true;
-    document.getElementById("playRecord").textContent = "■ Stop melody";
-    setText("playerStatus", `Now playing ${selectedRow.song} by ${selectedRow.artist}.`);
+    setText("playerStatus", "Spinning through real No. 1 songs from the archive…");
     if (sceneBundle) sceneBundle.setPlaying(true);
-    stopTimer = window.setTimeout(stopRecord, 3900);
+    spinTimer = window.setInterval(() => {
+      selectedRow = randomNumberOne();
+      const selector = document.getElementById("weekSelector");
+      if (selector) selector.value = selectedRow.chart_date;
+      updateSelectedRow();
+    }, 420);
   }
 
-  function stopRecord() {
-    playing = false;
-    if (stopTimer) window.clearTimeout(stopTimer);
-    stopTimer = null;
-    const button = document.getElementById("playRecord");
-    if (button) button.textContent = "▶ Play this week";
-    if (selectedRow) setText("playerStatus", `Ready to play a chart-inspired melody for ${selectedRow.song}.`);
+  function stopSpin() {
+    spinning = false;
+    if (spinTimer) window.clearInterval(spinTimer);
+    spinTimer = null;
+    const button = document.getElementById("spinRecord");
+    if (button) {
+      button.textContent = "↻ Spin the records";
+      button.setAttribute("aria-pressed", "false");
+    }
     if (sceneBundle) sceneBundle.setPlaying(false);
+    if (selectedRow) setText("playerStatus", `Stopped on ${selectedRow.song} by ${selectedRow.artist}.`);
   }
 
   function cylinderBetween(THREE, start, end, radius, material) {
@@ -378,11 +371,21 @@
 
   function start(rows) {
     allRows = rows;
+    numberOneRows = rows.filter(row => row.rank === 1);
     populateRecordWall(rows);
     populateWeekSelector(rows);
-    document.getElementById("playRecord")?.addEventListener("click", playRecord);
+    const spinButton = document.getElementById("spinRecord");
+    const player = document.getElementById("recordPlayer");
+    spinButton?.addEventListener("click", spinRecord);
+    player?.addEventListener("click", spinRecord);
+    player?.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        spinRecord();
+      }
+    });
     sceneBundle = createRecordPlayer();
-    if (sceneBundle && selectedRow) sceneBundle.setLabelColor(colorFor(selectedRow.song));
+    if (sceneBundle && selectedRow) sceneBundle.setLabelColor(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
   }
 
   window.Hot100Music = { start };
