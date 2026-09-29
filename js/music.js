@@ -467,7 +467,7 @@
         mount.classList.toggle("is-zoomed", value);
         if (stage) stage.classList.toggle("is-zoomed", value);
         if (zoomOutButton) zoomOutButton.hidden = !value;
-        interactionHint.textContent = value ? `Hover one of ${songRows.length.toLocaleString()} song dots · click the record to spin` : "Click the record to zoom in";
+        interactionHint.textContent = value ? `Hover one of ${songRows.length.toLocaleString()} song/artist dots · click the record to spin` : "Click the record to zoom in";
         if (!value) hideTooltip();
         setText("playerStatus", value ? "Close-up ready: hover a neon dot or click the record to spin." : `Selected ${selectedRow ? selectedRow.song : "a song"}. Click the record to zoom in.`);
       };
