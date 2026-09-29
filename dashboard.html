@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Billboard Hot 100 | Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
+  </head>
+  <body>
+    <nav class="site-nav"><a class="brand" href="index.html">HOT 100 / WEEKLY MOMENTUM</a><div class="nav-links"><a href="index.html">Report</a><a class="active" href="dashboard.html">Dashboard</a></div></nav>
+    <main class="page-shell">
+      <section class="dashboard-heading"><p class="eyebrow">Interactive dashboard</p><h1>Filter the weekly chart universe.</h1><p class="hero-copy">Use the controls to compare years, artists, movement, and rank ranges. Every summary card, chart, and table below updates from the filtered rows.</p></section>
+
+      <section class="control-panel" aria-label="Dashboard filters">
+        <label>Year<select id="yearFilter"><option value="">All years</option></select></label>
+        <label>Artist<select id="artistFilter"><option value="">All artists</option></select></label>
+        <label>Movement<select id="movementFilter"><option value="">All movement</option><option value="New">New</option><option value="Up">Up</option><option value="Down">Down</option><option value="Unchanged">Unchanged</option></select></label>
+        <label>Maximum rank<input id="maxRank" type="number" min="1" max="100" value="100" /></label>
+        <button id="resetFilters" class="button-secondary" type="button">Reset filters</button>
+      </section>
+
+      <section class="stat-grid" aria-label="Filtered summary numbers"><div class="stat-card"><span>Filtered rows</span><strong id="rowCount">—</strong></div><div class="stat-card"><span>Unique songs</span><strong id="songCount">—</strong></div><div class="stat-card"><span>Unique artists</span><strong id="artistCount">—</strong></div><div class="stat-card"><span>Average weeks on chart</span><strong id="averageWeeks">—</strong></div></section>
+
+      <section class="switch-panel"><label>Trend measure<select id="measureSelect"><option value="count">Count of observations</option><option value="avg_rank">Average rank</option><option value="median_rank">Median rank</option><option value="avg_weeks_on_chart">Average weeks on chart</option></select></label><label>Break chart down by<select id="breakdownSelect"><option value="year">Year</option><option value="decade">Decade</option><option value="artist">Artist</option><option value="movement">Movement</option></select></label><p id="dashboardStatus" class="status-message">Loading the data...</p></section>
+
+      <section class="dashboard-grid"><article class="chart-card chart-wide"><h2>Filtered trend</h2><div class="chart-wrap"><canvas id="trendChart"></canvas></div></article><article class="chart-card"><h2>Top artists</h2><div class="chart-wrap"><canvas id="artistChart"></canvas></div></article><article class="chart-card"><h2>Movement mix</h2><div class="chart-wrap"><canvas id="movementChart"></canvas></div></article><article class="chart-card chart-wide"><h2>Longevity by rank bucket</h2><div class="chart-wrap"><canvas id="longevityChart"></canvas></div></article></section>
+
+      <section class="table-card"><div class="table-heading"><div><p class="eyebrow">Current view</p><h2>Rows behind the charts</h2></div><span id="tableSummary" class="muted">—</span></div><div class="table-scroll"><table><thead><tr><th>Date</th><th>Rank</th><th>Song</th><th>Artist</th><th>Last week</th><th>Peak</th><th>Weeks</th><th>Movement</th></tr></thead><tbody id="dataBody"></tbody></table></div></section>
+    </main>
+  </body>
+</html>

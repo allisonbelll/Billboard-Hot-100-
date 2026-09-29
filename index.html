@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Billboard Hot 100 | Weekly Momentum</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/report.js" defer></script>
+  </head>
+  <body>
+    <nav class="site-nav">
+      <a class="brand" href="index.html">HOT 100 / WEEKLY MOMENTUM</a>
+      <div class="nav-links"><a class="active" href="index.html">Report</a><a href="dashboard.html">Dashboard</a></div>
+    </nav>
+
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">Financial Data Analytics · Billboard Hot 100</p>
+        <h1>What makes a song stay on the chart?</h1>
+        <p class="hero-copy">This report studies weekly Billboard Hot 100 song appearances from 2010 through 2025. It focuses on rank movement, chart longevity, artist concentration, and the changing mix of songs in the Top 100.</p>
+        <p class="byline">Prepared by Allison Bell · Data snapshot: 2010–2025</p>
+      </section>
+
+      <section class="stat-grid" aria-label="Headline numbers">
+        <div class="stat-card"><span>Weekly song observations</span><strong id="statRows">—</strong></div>
+        <div class="stat-card"><span>Weekly periods</span><strong id="statWeeks">—</strong></div>
+        <div class="stat-card"><span>Unique songs</span><strong id="statSongs">—</strong></div>
+        <div class="stat-card"><span>Unique artists</span><strong id="statArtists">—</strong></div>
+      </section>
+
+      <p id="reportStatus" class="status-message">Loading the data...</p>
+
+      <section class="story-grid">
+        <article class="story-card story-wide"><p class="eyebrow">Finding 01</p><h2>Chart leadership changed most in <span id="findingYearOne">—</span>.</h2><p id="findingOne">Calculating the number of distinct No. 1 songs by year.</p><div class="chart-wrap"><canvas id="chartOne"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 02</p><h2><span id="findingTopArtist">—</span> had the most chart appearances.</h2><p id="findingTwo">Calculating artist chart appearances.</p><div class="chart-wrap"><canvas id="chartTwo"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 03</p><h2>The longest observed run reached <span id="findingLongest">—</span> weeks.</h2><p id="findingThree">Calculating the longest song run in the snapshot.</p><div class="chart-wrap"><canvas id="chartThree"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 04</p><h2>Most weekly rank changes were classified as <span id="findingMovement">—</span>.</h2><p id="findingFour">Calculating the movement mix.</p><div class="chart-wrap"><canvas id="chartFour"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 05</p><h2>The strongest average rank appeared in the <span id="findingDecade">—</span> period.</h2><p id="findingFive">Calculating average rank by decade.</p><div class="chart-wrap"><canvas id="chartFive"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 06</p><h2>Average chart longevity peaked in <span id="findingLongevityYear">—</span>.</h2><p id="findingSix">Calculating average weeks on chart by year.</p><div class="chart-wrap"><canvas id="chartSix"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 07</p><h2>The Top 10 represented <span id="findingTopTenShare">—</span> of all observations.</h2><p id="findingSeven">Calculating the share of observations in the Top 10.</p><div class="chart-wrap"><canvas id="chartSeven"></canvas></div></article>
+        <article class="story-card"><p class="eyebrow">Finding 08</p><h2>Debuts at No. 1 were <span id="findingDebuts">—</span> of new entries.</h2><p id="findingEight">Calculating the share of new entries that debuted at No. 1.</p><div class="chart-wrap"><canvas id="chartEight"></canvas></div></article>
+      </section>
+
+      <section class="methodology"><p class="eyebrow">Data and method</p><h2>How to read this dataset</h2><p>One row represents one song appearing on one weekly Billboard Hot 100 chart. The source archive supplies the chart date, song, artist, current rank, previous rank, peak position, and weeks on chart. The preparation script adds year, decade, rank change, and movement. A positive rank change means the song moved upward because a smaller chart position is better.</p><p>The dataset is a 2010–2025 snapshot so the report and dashboard use the same fixed observations. Blank previous-week rank means the song was a new entry in that chart week. See the README for the source, transformation logic, and reproducibility instructions.</p></section>
+    </main>
+  </body>
+</html>
