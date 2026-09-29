@@ -303,11 +303,11 @@
       const dotGeometry = new THREE.BufferGeometry();
       dotGeometry.setAttribute("position", new THREE.Float32BufferAttribute(dotPositions, 3));
       dotGeometry.setAttribute("color", new THREE.Float32BufferAttribute(dotColors, 3));
-      const dotMaterial = new THREE.PointsMaterial({ size: .075, vertexColors: true, transparent: true, opacity: .95, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      const dotMaterial = new THREE.PointsMaterial({ size: .038, vertexColors: true, transparent: true, opacity: .88, depthWrite: false, blending: THREE.NormalBlending, sizeAttenuation: true });
       const songDots = new THREE.Points(dotGeometry, dotMaterial);
       songDots.visible = false;
       recordGroup.add(songDots);
-      const haloMaterial = new THREE.PointsMaterial({ size: .2, vertexColors: true, transparent: true, opacity: .16, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      const haloMaterial = new THREE.PointsMaterial({ size: .11, vertexColors: true, transparent: true, opacity: .1, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
       const songDotHalos = new THREE.Points(dotGeometry, haloMaterial);
       songDotHalos.visible = false;
       recordGroup.add(songDotHalos);
@@ -449,7 +449,9 @@
         const intersection = hitTest(event);
         if (!intersection) return;
         event.stopPropagation();
-        selectRecordRow(songRows[intersection.index]);
+        const row = songRows[intersection.index];
+        selectRecordRow(row);
+        showTooltip(row, intersection, event);
       };
 
       renderer.domElement.addEventListener("pointermove", handlePointerMove);
