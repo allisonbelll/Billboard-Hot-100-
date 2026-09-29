@@ -204,6 +204,13 @@ h2 {
   font-size: 1.12rem;
 }
 
+.hero-question {
+  margin: -0.65rem 0 1.2rem;
+  color: var(--gold);
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  letter-spacing: -.03em;
+}
+
 .byline {
   color: #aaa8bc;
   font-size: .88rem;
@@ -826,6 +833,14 @@ button:hover {
 
 .story-card p:not(.eyebrow) {
   color: #aaa8bc;
+}
+
+.story-card .finding-detail {
+  margin-top: -.2rem;
+  padding-left: .9rem;
+  color: #c0bfd0;
+  border-left: 2px solid var(--mint);
+  font-size: .9rem;
 }
 
 .chart-wrap {

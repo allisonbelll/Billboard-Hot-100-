@@ -39,9 +39,10 @@
     const longest = rows.reduce((best, row) => row.weeks_on_chart > best.weeks_on_chart ? row : best, rows[0]);
     setText("findingLongest", formatNumber(longest.weeks_on_chart));
     setText("findingThree", `${longest.song} by ${longest.artist} has the highest weeks-on-chart value observed in the snapshot.`);
-    const longevity = d3.rollup(rows, values => d3.mean(values, row => row.weeks_on_chart), row => row.year);
-    makeChart("chartThree", "line", years, years.map(year => longevity.get(year)), "Average weeks on chart", { beginAtZero: true });
-
+    const longestSongs = [...d3.rollup(rows, values => d3.max(values, row => row.weeks_on_chart), row => `${row.song} · ${row.artist}`).entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
+    makeChart("chartThree", "bar", longestSongs.map(d => d[0]), longestSongs.map(d => d[1]), "Maximum weeks on chart", { beginAtZero: true });
     const movementCounts = d3.rollup(rows, values => values.length, row => row.movement);
     const movementLabels = ["New", "Up", "Down", "Unchanged"];
     const movementValues = movementLabels.map(label => movementCounts.get(label) || 0);
@@ -55,7 +56,7 @@
     const decadeValues = decades.map(decade => decadeRank.get(decade));
     const strongestDecade = decades[decadeValues.indexOf(Math.min(...decadeValues))];
     setText("findingDecade", strongestDecade);
-    setText("findingFive", `${strongestDecade} has the lowest average rank, where a lower number indicates a stronger position.`);
+    setText("findingFive", `${strongestDecade} has the lowest average rank at ${decadeRank.get(strongestDecade).toFixed(1)}; lower is stronger.`);
     makeChart("chartFive", "bar", decades, decadeValues, "Average rank", { beginAtZero: false });
 
     const averageLongevity = d3.rollup(rows, values => d3.mean(values, row => row.weeks_on_chart), row => row.year);

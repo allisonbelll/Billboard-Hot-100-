@@ -101,7 +101,7 @@
     if (cover) cover.style.setProperty("--cover-accent", accent);
     setText("coverSong", selectedRow.song);
     setText("coverArtist", selectedRow.artist);
-    setText("playerStatus", spinning ? `Spinning through No. 1 records… currently showing ${selectedRow.song}.` : `Stopped on ${selectedRow.song} by ${selectedRow.artist}.`);
+    setText("playerStatus", spinning ? `Spinning through No. 1 records… currently showing ${selectedRow.song}.` : `Selected ${selectedRow.song} by ${selectedRow.artist}. Click the player to spin.`);
     if (sceneBundle) sceneBundle.setLabelColor(colorFor(`${selectedRow.song}|${selectedRow.artist}`));
   }
 
