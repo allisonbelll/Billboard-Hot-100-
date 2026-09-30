@@ -27,6 +27,7 @@
     renderChart("longevityChart", "bar", buckets.map(d => d[0]), longevity, "Average weeks on chart");
   }
   function formatDate(value) { return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T12:00:00Z`)); }
+  function spotifySearchUrl(row) { return `https://open.spotify.com/search/${encodeURIComponent(`${row.song} ${row.artist}`)}`; }
   function movementClass(value) { return String(value || "unknown").toLowerCase().replace(/[^a-z]+/g, "-"); }
   function selectSong(row, card) {
     document.querySelectorAll(".song-card.is-selected").forEach(item => item.classList.remove("is-selected"));
@@ -47,7 +48,14 @@
     title.textContent = row.song;
     const artist = document.createElement("span");
     artist.textContent = `${row.artist} · ${row.weeks_on_chart} weeks on chart · peak ${row.peak_position}`;
-    detail.append(kicker, title, artist);
+    const listenButton = document.createElement("a");
+    listenButton.className = "listen-button";
+    listenButton.href = spotifySearchUrl(row);
+    listenButton.target = "_blank";
+    listenButton.rel = "noopener noreferrer";
+    listenButton.textContent = "Listen on Spotify ↗";
+    listenButton.setAttribute("aria-label", `Listen to ${row.song} by ${row.artist} on Spotify`);
+    detail.append(kicker, title, artist, listenButton);
   }
   function updateTable(rows) {
     const list = document.getElementById("songCardList");

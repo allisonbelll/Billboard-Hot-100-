@@ -2255,6 +2255,42 @@ td {
   background: rgba(255, 159, 197, .06);
 }
 
+.now-playing-actions {
+  display: grid;
+  justify-items: end;
+  gap: .45rem;
+}
+
+.listen-button {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: .35rem .55rem;
+  color: var(--ink);
+  border: 1px solid rgba(255, 159, 197, .56);
+  border-radius: 999px;
+  background: rgba(255, 159, 197, .12);
+  box-shadow: 0 0 14px rgba(255, 159, 197, .12);
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-decoration: none;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+  white-space: nowrap;
+}
+
+.listen-button:hover,
+.listen-button:focus-visible {
+  color: #180b1a;
+  border-color: var(--pink);
+  background: var(--pink);
+  transform: translateY(-1px);
+}
+
+.song-detail-panel .listen-button {
+  margin-top: .35rem;
+}
+
 .song-card:focus-visible {
   outline-color: var(--pink);
 }

@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Billboard Hot 100 | Weekly Momentum</title>
-    <link rel="stylesheet" href="styles.css?v=14" />
+    <link rel="stylesheet" href="styles.css?v=15" />
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="js/data.js?v=3" defer></script>
-    <script src="js/music.js?v=11" defer></script>
+    <script src="js/music.js?v=12" defer></script>
     <script src="js/report.js?v=5" defer></script>
   </head>
   <body>
@@ -69,7 +69,10 @@
               <strong id="nowPlayingSong">Select a week</strong>
               <small id="nowPlayingArtist">The chart’s No. 1 song will appear here.</small>
             </div>
-            <small id="nowPlayingDate">—</small>
+            <div class="now-playing-actions">
+              <small id="nowPlayingDate">—</small>
+              <a id="listenButton" class="listen-button" href="#" target="_blank" rel="noopener noreferrer" hidden>Listen on Spotify ↗</a>
+            </div>
           </div>
         </div>
       </section>

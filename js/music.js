@@ -28,6 +28,10 @@
     return `#${value.toString(16).padStart(6, "0")}`;
   }
 
+  function spotifySearchUrl(row) {
+    return `https://open.spotify.com/search/${encodeURIComponent(`${row.song} ${row.artist}`)}`;
+  }
+
   function populateRecordWall(rows, wallYear) {
     const wall = document.getElementById("hangingRecords");
     if (!wall) return;
@@ -119,6 +123,12 @@
     setText("nowPlayingSong", row.song);
     setText("nowPlayingArtist", `${row.artist} · No. ${row.rank}`);
     setText("nowPlayingDate", formatDate(row.chart_date));
+    const listenButton = document.getElementById("listenButton");
+    if (listenButton) {
+      listenButton.href = spotifySearchUrl(row);
+      listenButton.hidden = false;
+      listenButton.setAttribute("aria-label", `Listen to ${row.song} by ${row.artist} on Spotify`);
+    }
     const accent = colorHex(colorFor(`${row.song}|${row.artist}`));
     const cover = document.getElementById("nowPlayingCover");
     if (cover) cover.style.setProperty("--cover-accent", accent);
