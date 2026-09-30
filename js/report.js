@@ -1,6 +1,6 @@
 (function () {
   const charts = {};
-  const palette = ["#ff5b77", "#ffd65c", "#6ff2ca", "#5ad7ff", "#f38bdc", "#ae8cff"];
+  const palette = ["#ff9fc5", "#a98bff", "#ff5b6e"];
   const formatNumber = value => Number(value).toLocaleString();
   const percent = value => `${(value * 100).toFixed(1)}%`;
 
@@ -9,8 +9,8 @@
     if (charts[id]) charts[id].destroy();
     charts[id] = new Chart(document.getElementById(id), {
       type,
-      data: { labels, datasets: [{ label, data: values, backgroundColor: options.backgroundColor || palette, borderColor: options.borderColor || "#f45b69", borderWidth: 2, fill: false, tension: .25 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: options.beginAtZero !== false, grid: { color: "#3b3e63" }, ticks: { color: "#b4b2c3" } }, x: { grid: { display: false }, ticks: { color: "#b4b2c3", maxRotation: 0 } } } },
+      data: { labels, datasets: [{ label, data: values, backgroundColor: options.backgroundColor || palette, borderColor: options.borderColor || "#ff5b6e", borderWidth: 2, fill: false, tension: .25 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: options.beginAtZero !== false, grid: { color: "rgba(169, 139, 255, .22)" }, ticks: { color: "#fff8fc" } }, x: { grid: { display: false }, ticks: { color: "#fff8fc", maxRotation: 0 } } } },
     });
   }
 

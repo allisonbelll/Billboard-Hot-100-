@@ -20,7 +20,7 @@
   }
 
   function colorFor(value) {
-    const colors = [0xff5b77, 0xffd65c, 0x6ff2ca, 0x5ad7ff, 0xf38bdc, 0xae8cff, 0xff9d45];
+    const colors = [0xff9fc5, 0xa98bff, 0xff5b6e];
     return colors[hash(value) % colors.length];
   }
 
@@ -239,25 +239,25 @@
       tooltip.append(tooltipSong, tooltipMeta);
       mount.appendChild(tooltip);
 
-      scene.add(new THREE.HemisphereLight(0x9ab8ff, 0x170e28, 2.6));
-      const keyLight = new THREE.DirectionalLight(0xfff0bb, 4.5);
+      scene.add(new THREE.HemisphereLight(0xa98bff, 0x170e28, 2.6));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
       keyLight.position.set(4, 9, 5);
       keyLight.castShadow = true;
       scene.add(keyLight);
-      const fillLight = new THREE.PointLight(0x5ad7ff, 2.2, 15);
+      const fillLight = new THREE.PointLight(0xa98bff, 2.2, 15);
       fillLight.position.set(-4, 3.5, -3);
       scene.add(fillLight);
-      const pinkLight = new THREE.PointLight(0xff5b77, 1.6, 10);
+      const pinkLight = new THREE.PointLight(0xff9fc5, 1.6, 10);
       pinkLight.position.set(3.6, 2.2, 1.8);
       scene.add(pinkLight);
 
       const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x4b3043, roughness: .48, metalness: .12 });
-      const goldMaterial = new THREE.MeshStandardMaterial({ color: 0xffd65c, roughness: .28, metalness: .72 });
-      const silverMaterial = new THREE.MeshStandardMaterial({ color: 0xaab7ce, roughness: .26, metalness: .82 });
+      const goldMaterial = new THREE.MeshStandardMaterial({ color: 0xff9fc5, roughness: .28, metalness: .72 });
+      const silverMaterial = new THREE.MeshStandardMaterial({ color: 0xc6b8e8, roughness: .26, metalness: .82 });
       const paperMaterial = new THREE.MeshStandardMaterial({ color: 0xf8f2e8, roughness: .7 });
       const blackMaterial = new THREE.MeshStandardMaterial({ color: 0x090a13, roughness: .3, metalness: .28 });
-      const redMaterial = new THREE.MeshStandardMaterial({ color: 0xff5b77, roughness: .42, metalness: .08 });
-      const mintMaterial = new THREE.MeshStandardMaterial({ color: 0x6ff2ca, emissive: 0x164b42, emissiveIntensity: 1.1, roughness: .32 });
+      const redMaterial = new THREE.MeshStandardMaterial({ color: 0xff5b6e, roughness: .42, metalness: .08 });
+      const mintMaterial = new THREE.MeshStandardMaterial({ color: 0xff9fc5, emissive: 0x5d2443, emissiveIntensity: 1.1, roughness: .32 });
 
       const base = new THREE.Mesh(new THREE.BoxGeometry(6.4, .42, 5.6), baseMaterial);
       base.position.y = -.62;
@@ -297,12 +297,12 @@
       spindle.position.y = .4;
       recordGroup.add(spindle);
       for (let radius = .92; radius < 2.35; radius += .18) {
-        const groove = new THREE.Mesh(new THREE.TorusGeometry(radius, .012, 8, 96), new THREE.MeshBasicMaterial({ color: 0x55433a, transparent: true, opacity: .65 }));
+        const groove = new THREE.Mesh(new THREE.TorusGeometry(radius, .012, 8, 96), new THREE.MeshBasicMaterial({ color: 0x563a67, transparent: true, opacity: .65 }));
         groove.rotation.x = Math.PI / 2;
         groove.position.y = .27;
         recordGroup.add(groove);
       }
-      const platterRim = new THREE.Mesh(new THREE.TorusGeometry(2.62, .045, 10, 96), new THREE.MeshBasicMaterial({ color: 0x5ad7ff, transparent: true, opacity: .7 }));
+      const platterRim = new THREE.Mesh(new THREE.TorusGeometry(2.62, .045, 10, 96), new THREE.MeshBasicMaterial({ color: 0xa98bff, transparent: true, opacity: .7 }));
       platterRim.rotation.x = Math.PI / 2;
       platterRim.position.y = .23;
       recordGroup.add(platterRim);
@@ -409,10 +409,10 @@
         hanging.add(wallLabel);
         scene.add(hanging);
       };
-      addHangingRecord(-2.35, 1.2, -2.45, 0xff5b77, -.08);
-      addHangingRecord(-.85, 1.7, -2.7, 0x6ff2ca, .06);
-      addHangingRecord(.85, 1.25, -2.75, 0xffd65c, -.05);
-      addHangingRecord(2.3, 1.75, -2.5, 0xae8cff, .08);
+      addHangingRecord(-2.35, 1.2, -2.45, 0xff5b6e, -.08);
+      addHangingRecord(-.85, 1.7, -2.7, 0xff9fc5, .06);
+      addHangingRecord(.85, 1.25, -2.75, 0xa98bff, -.05);
+      addHangingRecord(2.3, 1.75, -2.5, 0xff5b6e, .08);
 
       const resize = () => {
         const width = Math.max(1, mount.clientWidth);

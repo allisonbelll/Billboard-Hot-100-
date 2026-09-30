@@ -1,20 +1,20 @@
 :root {
-  --ink: #f4f6f1;
-  --muted: #9da7a1;
-  --cream: #080b0a;
-  --paper: #131817;
-  --paper-deep: #202825;
-  --line: #37413c;
-  --record: #070909;
-  --record-soft: #26332f;
-  --red: #ff625c;
-  --orange: #c6f36a;
-  --gold: #c6f36a;
-  --mint: #c6f36a;
-  --blue: #9da7a1;
-  --purple: #314039;
-  --pink: #ff625c;
-  --glass: rgba(19, 24, 22, .78);
+  --ink: #fff8fc;
+  --muted: #e0d1dc;
+  --cream: #0d0812;
+  --paper: #171020;
+  --paper-deep: #261536;
+  --line: #4a2e53;
+  --record: #09050c;
+  --record-soft: #2b1838;
+  --red: #ff5b6e;
+  --orange: #ff9fc5;
+  --gold: #ff9fc5;
+  --mint: #ff9fc5;
+  --blue: #a98bff;
+  --purple: #a98bff;
+  --pink: #ff9fc5;
+  --glass: rgba(23, 16, 32, .78);
   --hairline: rgba(244, 246, 241, .14);
   --shadow: 0 24px 70px rgba(0, 0, 0, .52);
 }
@@ -1943,4 +1943,356 @@ td:nth-child(4) {
   .song-card-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* Pink / purple / red visual system */
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(169, 139, 255, .13), transparent 25rem),
+    radial-gradient(circle at 8% 86%, rgba(255, 159, 197, .1), transparent 28rem),
+    linear-gradient(145deg, #0d0812 0%, #171020 52%, #100a18 100%);
+}
+
+::selection {
+  color: #180b1a;
+  background: var(--pink);
+}
+
+.site-nav {
+  border-bottom-color: rgba(255, 159, 197, .38);
+  background: rgba(13, 8, 18, .94);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .35), 0 0 28px rgba(255, 159, 197, .08);
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+  color: var(--pink);
+}
+
+.dashboard-heading {
+  border-color: rgba(255, 159, 197, .26);
+  background: linear-gradient(135deg, rgba(48, 27, 61, .88), rgba(13, 8, 18, .94));
+  box-shadow: var(--shadow), inset 0 0 60px rgba(169, 139, 255, .06);
+}
+
+.dashboard-heading h1 small,
+.hero-question,
+.hero-metadata strong,
+.record-tooltip strong,
+.now-playing-label,
+.wall-year-control,
+.stat-card strong,
+.detail-kicker {
+  color: var(--pink);
+}
+
+.musical-hero {
+  border-color: rgba(255, 159, 197, .28);
+  background:
+    linear-gradient(130deg, rgba(45, 24, 61, .9), rgba(13, 8, 18, .96)),
+    repeating-linear-gradient(135deg, rgba(169, 139, 255, .035) 0 2px, transparent 2px 12px);
+  box-shadow: var(--shadow), inset 0 0 70px rgba(169, 139, 255, .07), 0 0 40px rgba(255, 159, 197, .1);
+}
+
+.musical-hero::before {
+  border-color: rgba(255, 159, 197, .18);
+}
+
+.musical-hero::after {
+  border-color: rgba(169, 139, 255, .16);
+}
+
+.hero-copy-block::before {
+  border-color: var(--pink);
+}
+
+.record-player {
+  border-color: rgba(255, 159, 197, .42);
+  background:
+    linear-gradient(135deg, rgba(255, 159, 197, .16), transparent 48%),
+    linear-gradient(160deg, #392141, #110a18);
+  box-shadow: 0 30px 50px rgba(0, 0, 0, .55), inset 0 0 0 9px rgba(255, 255, 255, .08), 0 0 35px rgba(169, 139, 255, .18);
+}
+
+.record-player.is-zoomed {
+  border-color: var(--pink);
+  box-shadow: 0 30px 50px rgba(0, 0, 0, .55), inset 0 0 0 9px rgba(255, 255, 255, .08), 0 0 48px rgba(255, 159, 197, .32);
+}
+
+.record-interaction-hint,
+.record-tooltip,
+.record-zoom-out {
+  border-color: var(--pink);
+  box-shadow: 0 0 24px rgba(255, 159, 197, .24);
+}
+
+.record-interaction-hint,
+.record-player.is-zoomed .record-interaction-hint {
+  color: var(--pink);
+}
+
+.record-player.is-zoomed .record-interaction-hint,
+.record-tooltip,
+.record-zoom-out {
+  border-color: rgba(255, 159, 197, .5);
+}
+
+.record-player-fallback {
+  background: repeating-radial-gradient(circle, #38214e 0 3px, #100816 4px 8px);
+  box-shadow: 0 20px 28px rgba(0, 0, 0, .48), 0 0 30px rgba(169, 139, 255, .16);
+}
+
+.record-player-fallback::after {
+  border-color: var(--pink);
+  background: var(--purple);
+}
+
+.record-zoom-out:hover {
+  color: #180b1a;
+  background: var(--pink);
+}
+
+.stage-note-one,
+.stage-note-two,
+.stage-note-three {
+  color: var(--pink);
+  text-shadow: 0 0 18px rgba(255, 159, 197, .62);
+}
+
+.stage-note-two {
+  color: var(--purple);
+  text-shadow: 0 0 18px rgba(169, 139, 255, .62);
+}
+
+.instrument-sticker {
+  border-color: rgba(255, 159, 197, .65);
+  background: rgba(13, 8, 18, .92);
+  box-shadow: 5px 6px 0 rgba(0, 0, 0, .26), 0 0 18px rgba(255, 159, 197, .16);
+}
+
+.sticker-piano,
+.sticker-tape {
+  color: var(--purple);
+}
+
+.sticker-guitar {
+  color: var(--red);
+}
+
+.now-playing {
+  border-color: rgba(255, 159, 197, .3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .45), 0 0 20px rgba(255, 159, 197, .12);
+}
+
+.cover-art::after {
+  background: rgba(169, 139, 255, .7);
+  box-shadow: 0 0 18px var(--purple);
+}
+
+.records-gallery {
+  border-color: rgba(169, 139, 255, .3);
+  background:
+    linear-gradient(180deg, rgba(36, 20, 48, .96), rgba(10, 6, 14, .99)),
+    repeating-linear-gradient(90deg, rgba(255, 159, 197, .04) 0 2px, transparent 2px 76px);
+  box-shadow: var(--shadow), inset 0 0 80px rgba(169, 139, 255, .06), 0 0 36px rgba(255, 159, 197, .1);
+}
+
+.records-gallery::before {
+  background: repeating-linear-gradient(90deg, transparent 0 13%, rgba(255, 159, 197, .45) 13.1% 13.25%, transparent 13.4% 25%);
+}
+
+.wall-year-control select {
+  border-color: var(--pink);
+  box-shadow: 0 0 16px rgba(255, 159, 197, .14);
+}
+
+.records-wall::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 159, 197, .8), transparent);
+  box-shadow: 0 0 14px var(--pink);
+}
+
+.hanging-record::before {
+  background: linear-gradient(var(--purple), rgba(169, 139, 255, .06));
+  box-shadow: 0 0 9px var(--purple);
+}
+
+.hanging-record::after {
+  border-color: var(--pink);
+  background: var(--pink);
+  box-shadow: 0 0 10px var(--pink);
+}
+
+.record-disc {
+  border-color: rgba(255, 255, 255, .16);
+  background: repeating-radial-gradient(circle at 48% 48%, #38214e 0 2px, #100816 3px 6px);
+  box-shadow: 0 16px 24px rgba(0, 0, 0, .45), 0 0 0 1px rgba(169, 139, 255, .45), 0 0 26px color-mix(in srgb, var(--label-color) 58%, transparent);
+}
+
+.stat-card,
+.story-card,
+.chart-card,
+.table-card,
+.methodology,
+.control-panel,
+.switch-panel {
+  border-color: rgba(169, 139, 255, .24);
+  background: linear-gradient(145deg, rgba(31, 20, 43, .95), rgba(13, 8, 18, .97));
+  box-shadow: var(--shadow), inset 0 0 24px rgba(255, 159, 197, .035);
+}
+
+.stat-card::after {
+  background: linear-gradient(90deg, transparent, var(--pink));
+  box-shadow: 0 0 10px var(--pink);
+}
+
+.stat-card:hover,
+.story-card:hover {
+  border-color: rgba(255, 159, 197, .5);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, .5), 0 0 30px rgba(255, 159, 197, .1), inset 0 0 30px rgba(169, 139, 255, .08);
+}
+
+.story-card::before {
+  color: rgba(255, 159, 197, .62);
+}
+
+.story-card .finding-detail {
+  border-left-color: var(--pink);
+}
+
+.chart-wrap {
+  border-color: rgba(169, 139, 255, .2);
+  background:
+    linear-gradient(145deg, rgba(169, 139, 255, .07), rgba(255, 159, 197, .035)),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(169, 139, 255, .065) 40px);
+}
+
+.motif-vinyl::before,
+.motif-record-two::before {
+  border-color: rgba(169, 139, 255, .36);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 159, 197, .78) 0 .28rem, transparent .3rem),
+    repeating-radial-gradient(circle, rgba(169, 139, 255, .25) 0 1px, transparent 2px 7px),
+    conic-gradient(from 25deg, rgba(255, 159, 197, .34), rgba(169, 139, 255, .14), rgba(255, 91, 110, .34), rgba(255, 159, 197, .34));
+  box-shadow: 0 0 34px rgba(169, 139, 255, .18);
+}
+
+.motif-vinyl::after,
+.motif-record-two::after {
+  background: var(--pink);
+  box-shadow: 0 0 18px var(--pink);
+}
+
+.motif-microphone::before {
+  border-color: rgba(169, 139, 255, .42);
+  box-shadow: 0 0 24px rgba(169, 139, 255, .24);
+}
+
+.motif-microphone::after {
+  background: var(--pink);
+  box-shadow: 0 0 16px var(--pink), 1.2rem 2rem 0 -.1rem var(--purple);
+}
+
+.motif-keys::before,
+.motif-piano::before {
+  border-color: rgba(255, 159, 197, .5);
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .72) 0 1.1rem, rgba(54, 31, 72, .94) 1.1rem 1.22rem);
+  box-shadow: 0 0 24px rgba(255, 159, 197, .18);
+}
+
+.motif-keys::after,
+.motif-piano::after {
+  color: rgba(255, 159, 197, .7);
+  text-shadow: 0 0 18px rgba(255, 159, 197, .72);
+}
+
+.motif-piano::after {
+  color: rgba(169, 139, 255, .72);
+}
+
+.motif-guitar::before {
+  background: repeating-linear-gradient(0deg, rgba(255, 91, 110, .7) 0 .06rem, transparent .07rem .13rem);
+  box-shadow: 0 0 16px rgba(255, 91, 110, .38);
+}
+
+.motif-guitar::after {
+  color: rgba(255, 91, 110, .66);
+  text-shadow: 0 0 20px rgba(255, 91, 110, .78);
+}
+
+.motif-speaker::before {
+  border-color: rgba(169, 139, 255, .32);
+  background: radial-gradient(circle, rgba(255, 91, 110, .5) 0 12%, rgba(13, 8, 18, .78) 13% 35%, transparent 36%);
+  box-shadow: 0 0 28px rgba(169, 139, 255, .2);
+}
+
+.motif-speaker::after {
+  color: rgba(255, 159, 197, .72);
+  text-shadow: 0 0 18px rgba(255, 159, 197, .78);
+}
+
+.motif-notes::before {
+  color: rgba(255, 91, 110, .72);
+  text-shadow: 0 0 22px rgba(255, 91, 110, .76);
+}
+
+.motif-notes::after {
+  color: rgba(169, 139, 255, .72);
+  text-shadow: 0 0 20px rgba(169, 139, 255, .76);
+}
+
+.methodology::before {
+  color: rgba(255, 159, 197, .62);
+}
+
+th,
+td {
+  border-bottom-color: rgba(169, 139, 255, .22);
+}
+
+.song-detail-panel {
+  border-left-color: var(--pink);
+  background: rgba(255, 159, 197, .06);
+}
+
+.song-card:focus-visible {
+  outline-color: var(--pink);
+}
+
+.song-card-face {
+  border-color: rgba(255, 159, 197, .22);
+  background: linear-gradient(145deg, rgba(35, 20, 47, .98), rgba(13, 8, 18, .98));
+}
+
+.song-card:hover .song-card-face,
+.song-card:focus-visible .song-card-face,
+.song-card.is-selected .song-card-face {
+  border-color: var(--card-accent, var(--pink));
+}
+
+.song-cover-art {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, .82) 0 .12rem, transparent .14rem),
+    radial-gradient(circle at 22% 72%, rgba(255, 255, 255, .5) 0 .18rem, transparent .2rem),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 1rem, rgba(18, 8, 24, .22) 1.05rem 1.1rem),
+    linear-gradient(145deg, var(--card-accent, var(--pink)) 0 36%, #3b2252 36% 64%, #120816 64%);
+}
+
+.song-card-back {
+  background: linear-gradient(145deg, rgba(51, 29, 67, .98), rgba(15, 8, 20, .98));
+}
+
+.song-card-back-stats > span {
+  border-top-color: rgba(255, 159, 197, .24);
+}
+
+.movement-up,
+.movement-new {
+  color: var(--pink);
+  border-color: rgba(255, 159, 197, .48);
+}
+
+.movement-down {
+  color: var(--red);
+  border-color: rgba(255, 91, 110, .48);
 }

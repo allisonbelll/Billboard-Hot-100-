@@ -8,7 +8,7 @@
   function filteredRows() { const year = document.getElementById("yearFilter").value; const artist = document.getElementById("artistFilter").value; const movement = document.getElementById("movementFilter").value; const maxRank = Math.min(100, Math.max(1, Number(document.getElementById("maxRank").value) || 100)); return allRows.filter(row => (!year || row.year === Number(year)) && (!artist || row.artist === artist) && (!movement || row.movement === movement) && row.rank <= maxRank); }
   function metric(values, measure) { if (measure === "count") return values.length; if (measure === "avg_rank") return d3.mean(values, row => row.rank); if (measure === "median_rank") return Hot100Data.median(values.map(row => row.rank)); return d3.mean(values, row => row.weeks_on_chart); }
   function groupedMetric(rows, field, measure) { const grouped = d3.rollup(rows, values => metric(values, measure), row => row[field]); return [...grouped.entries()].sort((a, b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric: true })); }
-  function renderChart(id, type, chartLabels, values, label, colors) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), { type, data: { labels: chartLabels, datasets: [{ label, data: values, backgroundColor: colors || "#c6f36a", borderColor: "#c6f36a", borderWidth: 2, tension: .25, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: "rgba(198, 243, 106, .12)" }, ticks: { color: "#9da7a1" } }, x: { grid: { display: false }, ticks: { color: "#9da7a1", maxRotation: 0 } } } } }); }
+  function renderChart(id, type, chartLabels, values, label, colors) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), { type, data: { labels: chartLabels, datasets: [{ label, data: values, backgroundColor: colors || "#ff9fc5", borderColor: "#ff9fc5", borderWidth: 2, tension: .25, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: "rgba(169, 139, 255, .18)" }, ticks: { color: "#fff8fc" } }, x: { grid: { display: false }, ticks: { color: "#fff8fc", maxRotation: 0 } } } } }); }
   function updateCharts(rows) {
     const measure = document.getElementById("measureSelect").value;
     const breakdown = document.getElementById("breakdownSelect").value;
@@ -20,7 +20,7 @@
 
     const movementLabels = ["New", "Up", "Down", "Unchanged"];
     const movement = movementLabels.map(label => rows.filter(row => row.movement === label).length);
-    renderChart("movementChart", "doughnut", movementLabels, movement, "Movement", ["#ff625c", "#c6f36a", "#9da7a1", "#46524b"]);
+    renderChart("movementChart", "doughnut", movementLabels, movement, "Movement", ["#ff5b6e", "#ff9fc5", "#a98bff", "#412853"]);
 
     const buckets = [["1–10", 1, 10], ["11–25", 11, 25], ["26–50", 26, 50], ["51–75", 51, 75], ["76–100", 76, 100]];
     const longevity = buckets.map(([, low, high]) => { const bucketRows = rows.filter(row => row.rank >= low && row.rank <= high); return bucketRows.length ? d3.mean(bucketRows, row => row.weeks_on_chart) : 0; });
@@ -54,7 +54,7 @@
     if (!list) return;
     list.innerHTML = "";
     const visibleRows = rows.slice().sort((a, b) => a.chart_date.localeCompare(b.chart_date) || a.rank - b.rank).slice(0, 100);
-    const coverPalette = ["#c6f36a", "#ff625c", "#d4b478", "#9da7a1", "#8fd8bc", "#e2e8df"];
+    const coverPalette = ["#ff9fc5", "#a98bff", "#ff5b6e"];
     visibleRows.forEach((row, index) => {
       const card = document.createElement("button");
       card.type = "button";
