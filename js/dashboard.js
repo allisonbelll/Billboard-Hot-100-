@@ -30,6 +30,12 @@
   function movementClass(value) { return String(value || "unknown").toLowerCase().replace(/[^a-z]+/g, "-"); }
   function selectSong(row, card) {
     document.querySelectorAll(".song-card.is-selected").forEach(item => item.classList.remove("is-selected"));
+    document.querySelectorAll(".song-card.is-flipped").forEach(item => {
+      if (item !== card) {
+        item.classList.remove("is-flipped");
+        item.setAttribute("aria-pressed", "false");
+      }
+    });
     card?.classList.add("is-selected");
     const detail = document.getElementById("selectedSongDetail");
     if (!detail) return;
@@ -48,38 +54,80 @@
     if (!list) return;
     list.innerHTML = "";
     const visibleRows = rows.slice().sort((a, b) => a.chart_date.localeCompare(b.chart_date) || a.rank - b.rank).slice(0, 100);
-    visibleRows.forEach(row => {
+    const coverPalette = ["#c6f36a", "#ff625c", "#d4b478", "#9da7a1", "#8fd8bc", "#e2e8df"];
+    visibleRows.forEach((row, index) => {
       const card = document.createElement("button");
       card.type = "button";
       card.className = "song-card";
       card.setAttribute("aria-label", `Rank ${row.rank}, ${row.song} by ${row.artist}, ${formatDate(row.chart_date)}`);
 
-      const rank = document.createElement("span");
-      rank.className = "song-card-rank";
-      rank.textContent = String(row.rank).padStart(2, "0");
-      const content = document.createElement("span");
-      content.className = "song-card-content";
+      card.setAttribute("aria-pressed", "false");
+      card.style.setProperty("--card-accent", coverPalette[index % coverPalette.length]);
+      const inner = document.createElement("span");
+      inner.className = "song-card-inner";
+
+      const front = document.createElement("span");
+      front.className = "song-card-face song-card-front";
+      const cover = document.createElement("span");
+      cover.className = "song-cover-art";
+      const coverKicker = document.createElement("span");
+      coverKicker.className = "cover-kicker";
+      coverKicker.textContent = "HOT 100 / ARCHIVE";
+      const coverRank = document.createElement("strong");
+      coverRank.className = "cover-rank";
+      coverRank.textContent = `#${row.rank}`;
+      const coverGlyph = document.createElement("span");
+      coverGlyph.className = "cover-glyph";
+      coverGlyph.textContent = "♪";
+      cover.append(coverKicker, coverRank, coverGlyph);
       const title = document.createElement("strong");
-      title.className = "song-card-title";
+      title.className = "song-card-front-title";
       title.textContent = row.song;
-      const artist = document.createElement("span");
-      artist.className = "song-card-artist";
-      artist.textContent = row.artist;
-      content.append(title, artist);
       const date = document.createElement("span");
-      date.className = "song-card-date";
+      date.className = "song-card-front-date";
       date.textContent = formatDate(row.chart_date);
-      const stats = document.createElement("span");
-      stats.className = "song-card-stats";
-      stats.textContent = `Peak ${row.peak_position} · ${row.weeks_on_chart} wks`;
+      const flipHint = document.createElement("span");
+      flipHint.className = "song-card-flip-hint";
+      flipHint.textContent = "CLICK TO FLIP";
+      front.append(cover, title, date, flipHint);
+
+      const back = document.createElement("span");
+      back.className = "song-card-face song-card-back";
+      const backKicker = document.createElement("span");
+      backKicker.className = "detail-kicker";
+      backKicker.textContent = "CHART CONTEXT";
+      const backTitle = document.createElement("strong");
+      backTitle.className = "song-card-back-title";
+      backTitle.textContent = row.song;
+      const backArtist = document.createElement("span");
+      backArtist.className = "song-card-back-artist";
+      backArtist.textContent = row.artist;
+      const backStats = document.createElement("span");
+      backStats.className = "song-card-back-stats";
+      [["LAST WEEK", row.last_week_rank ?? "—"], ["PEAK", row.peak_position], ["WEEKS", row.weeks_on_chart]].forEach(([label, value]) => {
+        const stat = document.createElement("span");
+        const statLabel = document.createElement("small");
+        statLabel.textContent = label;
+        const statValue = document.createElement("strong");
+        statValue.textContent = value;
+        stat.append(statLabel, statValue);
+        backStats.appendChild(stat);
+      });
       const movement = document.createElement("span");
       movement.className = `song-card-movement movement-${movementClass(row.movement)}`;
       movement.textContent = row.movement;
-      const arrow = document.createElement("span");
-      arrow.className = "song-card-arrow";
-      arrow.textContent = "↗";
-      card.append(rank, content, date, stats, movement, arrow);
-      card.addEventListener("click", () => selectSong(row, card));
+      const backHint = document.createElement("span");
+      backHint.className = "song-card-flip-hint";
+      backHint.textContent = "CLICK TO RETURN";
+      back.append(backKicker, backTitle, backArtist, backStats, movement, backHint);
+      inner.append(front, back);
+      card.appendChild(inner);
+      card.addEventListener("click", () => {
+        const flipped = card.classList.toggle("is-flipped");
+        card.setAttribute("aria-pressed", String(flipped));
+        if (flipped) selectSong(row, card);
+        else card.classList.remove("is-selected");
+      });
       list.appendChild(card);
     });
     setText("tableSummary", `Showing ${visibleRows.length.toLocaleString()} of ${rows.length.toLocaleString()} filtered rows`);
